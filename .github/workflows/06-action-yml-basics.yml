@@ -1,0 +1,34 @@
+# CONCEPT 6: action.yml Basics (inputs, outputs, runs)
+# Learn how actions receive inputs and produce outputs
+
+name: 06 - Action Inputs and Outputs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  action-io-demo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # This action has INPUTS (who-to-greet) and OUTPUTS (time)
+      - name: Use action with input
+        id: hello  # ID is needed to access outputs later!
+        uses: actions/hello-world-docker-action@main
+        with:
+          who-to-greet: 'GitHub Actions Learner'  # INPUT to the action
+      
+      # Access OUTPUT from the previous step
+      - name: Get the output time
+        run: |
+          echo "The action ran at: ${{ steps.hello.outputs.time }}"
+          echo ""
+          echo "=== HOW action.yml WORKS ==="
+          echo "1. 'inputs' define what data action accepts"
+          echo "2. 'outputs' define what data action returns"
+          echo "3. 'runs' defines HOW action executes (docker/node/composite)"
+          echo "4. Use 'with:' to pass inputs"
+          echo "5. Use 'steps.<id>.outputs.<name>' to read outputs"

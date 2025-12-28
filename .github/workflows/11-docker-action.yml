@@ -1,0 +1,47 @@
+# CONCEPT 11: Docker Container Action Basics
+# Learn how to run actions inside Docker containers
+
+name: 11 - Docker Action Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  docker-action-demo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Use a public Docker-based action
+      - name: Run Docker-based action
+        uses: actions/hello-world-docker-action@main
+        with:
+          who-to-greet: 'Docker Action Learner'
+      
+      # Run commands in a specific Docker container
+      - name: Run in Alpine container
+        uses: docker://alpine:3.18
+        with:
+          args: echo "Hello from Alpine Linux container!"
+      
+      # Run in Python container
+      - name: Run Python in container
+        uses: docker://python:3.11-slim
+        with:
+          args: python -c "print('Hello from Python container!')"
+      
+      - name: Explain Docker actions
+        run: |
+          echo "=== DOCKER ACTIONS ==="
+          echo ""
+          echo "1. 'uses: owner/repo@ref' - Docker action from GitHub"
+          echo "2. 'uses: docker://image:tag' - Direct Docker Hub image"
+          echo ""
+          echo "Docker actions have action.yml with:"
+          echo "  runs:"
+          echo "    using: 'docker'"
+          echo "    image: 'Dockerfile' or 'docker://image'"
+          echo ""
+          echo "Benefits: Consistent environment, any language!"

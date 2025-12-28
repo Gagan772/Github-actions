@@ -1,0 +1,22 @@
+# CONCEPT 1C: Discussion Trigger
+# This workflow runs when someone creates a discussion
+
+name: 01c - Discussion Trigger Demo
+
+# TRIGGER: Runs when a discussion is created
+on:
+  discussion:
+    types:
+      - created  # Only when a NEW discussion is created
+
+jobs:
+  greet-discussion:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Show discussion details
+        run: |
+          echo "New discussion created!"
+          echo "Title: ${{ github.event.discussion.title }}"
+          echo "Category: ${{ github.event.discussion.category.name }}"
+          echo "Author: ${{ github.event.discussion.user.login }}"

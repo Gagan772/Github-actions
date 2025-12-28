@@ -1,0 +1,62 @@
+# CONCEPT 14: Runner Types (ubuntu, windows, macos)
+# Learn different GitHub-hosted runner operating systems
+
+name: 14 - Runner Types Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # JOB 1: Ubuntu (Linux) - Most common, cheapest
+  ubuntu-runner:
+    runs-on: ubuntu-latest  # or ubuntu-22.04, ubuntu-20.04
+    steps:
+      - name: Linux info
+        run: |
+          echo "=== UBUNTU RUNNER ==="
+          echo "OS: $(uname -a)"
+          echo "Shell: $SHELL"
+          echo "User: $(whoami)"
+          echo "Default shell: bash"
+  
+  # JOB 2: Windows
+  windows-runner:
+    runs-on: windows-latest  # or windows-2022, windows-2019
+    steps:
+      - name: Windows info
+        run: |
+          Write-Host "=== WINDOWS RUNNER ==="
+          Write-Host "OS: $env:OS"
+          Write-Host "Computer: $env:COMPUTERNAME"
+          Write-Host "User: $env:USERNAME"
+          Write-Host "Default shell: PowerShell"
+        shell: pwsh  # PowerShell Core
+  
+  # JOB 3: macOS
+  macos-runner:
+    runs-on: macos-latest  # or macos-14, macos-13
+    steps:
+      - name: macOS info
+        run: |
+          echo "=== MACOS RUNNER ==="
+          echo "OS: $(uname -a)"
+          echo "macOS version: $(sw_vers -productVersion)"
+          echo "User: $(whoami)"
+          echo "Default shell: bash/zsh"
+  
+  # Summary job
+  summary:
+    runs-on: ubuntu-latest
+    needs: [ubuntu-runner, windows-runner, macos-runner]
+    steps:
+      - name: Runner summary
+        run: |
+          echo "=== RUNNER COMPARISON ==="
+          echo "ubuntu-latest: Linux, fastest, cheapest"
+          echo "windows-latest: For .NET, Windows-specific"
+          echo "macos-latest: For iOS/macOS builds"
+          echo ""
+          echo "Cost: Ubuntu < Windows < macOS"

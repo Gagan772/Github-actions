@@ -1,0 +1,65 @@
+# CONCEPT 15: Workflow Status Visibility (PR, Checks, Actions tab)
+# Learn where to see workflow results in GitHub UI
+
+name: 15 - Status Visibility Demo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check-one:
+    runs-on: ubuntu-latest
+    steps:
+      - name: First check passes
+        run: |
+          echo "Check 1: Running tests..."
+          echo "Check 1: PASSED!"
+  
+  check-two:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Second check passes
+        run: |
+          echo "Check 2: Running linter..."
+          echo "Check 2: PASSED!"
+  
+  check-three:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Third check shows warning
+        run: |
+          echo "Check 3: Running security scan..."
+          echo "::warning::Minor issue found but not blocking"
+          echo "Check 3: PASSED with warnings!"
+  
+  final-status:
+    runs-on: ubuntu-latest
+    needs: [check-one, check-two, check-three]
+    steps:
+      - name: Show visibility locations
+        run: |
+          echo "=== WHERE TO SEE WORKFLOW STATUS ==="
+          echo ""
+          echo "1. ACTIONS TAB:"
+          echo "   - Repository > Actions"
+          echo "   - Shows all workflow runs"
+          echo "   - Click run to see logs"
+          echo ""
+          echo "2. COMMIT STATUS:"
+          echo "   - Green check or red X next to commit"
+          echo "   - Click to see details"
+          echo ""
+          echo "3. PULL REQUEST:"
+          echo "   - PR page > Checks tab"
+          echo "   - Required checks block merge"
+          echo "   - Shows each job status"
+          echo ""
+          echo "4. BRANCH PROTECTION:"
+          echo "   - Settings > Branches > Protection rules"
+          echo "   - Require status checks to pass"

@@ -1,0 +1,39 @@
+# CONCEPT 2: Debug, Warning, and Error Logs
+# Learn how to output different log levels in GitHub Actions
+
+name: 02 - Debug Warning Error Logs
+
+on:
+  push:
+    branches:
+      - main
+  # Also allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  show-log-levels:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Normal echo - always visible
+      - name: Normal log
+        run: echo "This is a normal log message"
+      
+      # DEBUG: Only visible when debug logging is enabled
+      - name: Debug log
+        run: echo "::debug::This is a DEBUG message - hidden by default"
+      
+      # WARNING: Shows yellow warning annotation
+      - name: Warning log
+        run: echo "::warning::This is a WARNING message"
+      
+      # ERROR: Shows red error annotation (workflow still continues)
+      - name: Error log
+        run: echo "::error::This is an ERROR message"
+      
+      # NOTICE: Shows blue notice annotation
+      - name: Notice log
+        run: echo "::notice::This is a NOTICE message"
+      
+      - name: Final step
+        run: echo "Workflow completed - errors above are just logs, not failures"

@@ -1,0 +1,47 @@
+# CONCEPT 8: Artifacts Upload + Retention
+# Learn how to save and download files between jobs/workflows
+
+name: 08 - Artifacts Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # JOB 1: Create and upload artifact
+  create-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a file to save
+        run: |
+          echo "Build output created at $(date)" > build-output.txt
+          echo "Version: 1.0.0" >> build-output.txt
+          echo "Status: Success" >> build-output.txt
+          cat build-output.txt
+      
+      # Upload the file as artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-build-artifact      # Name shown in GitHub UI
+          path: build-output.txt       # File(s) to upload
+          retention-days: 5            # Delete after 5 days (default 90)
+  
+  # JOB 2: Download and use the artifact
+  use-artifact:
+    runs-on: ubuntu-latest
+    needs: create-artifact  # Wait for upload to complete
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: my-build-artifact  # Same name used during upload
+      
+      - name: Read the artifact
+        run: |
+          echo "=== Downloaded artifact content ==="
+          cat build-output.txt
+          echo ""
+          echo "Artifact was passed from job 1 to job 2!"

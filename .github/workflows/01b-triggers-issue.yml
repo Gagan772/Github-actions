@@ -1,0 +1,22 @@
+# CONCEPT 1B: Issue Trigger
+# This workflow runs when someone creates an issue
+
+name: 01b - Issue Trigger Demo
+
+# TRIGGER: Runs when an issue is opened
+on:
+  issues:
+    types:
+      - opened  # Only when a NEW issue is created
+
+jobs:
+  greet-issue:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Show issue details
+        run: |
+          echo "New issue created!"
+          echo "Issue title: ${{ github.event.issue.title }}"
+          echo "Issue number: ${{ github.event.issue.number }}"
+          echo "Created by: ${{ github.event.issue.user.login }}"

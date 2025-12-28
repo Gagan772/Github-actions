@@ -1,0 +1,49 @@
+# CONCEPT 10: Executable Scripts (chmod)
+# Learn how to run shell scripts with proper permissions
+
+name: 10 - Executable Scripts Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Create a shell script
+      - name: Create a script file
+        run: |
+          cat > my-script.sh << 'EOF'
+          #!/bin/bash
+          echo "Hello from the script!"
+          echo "Current directory: $(pwd)"
+          echo "Current user: $(whoami)"
+          echo "Script executed successfully!"
+          EOF
+      
+      # PROBLEM: Script won't run without execute permission
+      - name: Try to run without chmod (will fail)
+        continue-on-error: true  # Don't stop workflow on error
+        run: |
+          echo "Trying to run script directly..."
+          ./my-script.sh || echo "FAILED! Permission denied"
+      
+      # SOLUTION: Add execute permission with chmod
+      - name: Make script executable with chmod
+        run: |
+          chmod +x my-script.sh
+          echo "Added execute permission!"
+          ls -la my-script.sh
+      
+      # Now it works!
+      - name: Run the executable script
+        run: |
+          echo "=== Running script after chmod ==="
+          ./my-script.sh

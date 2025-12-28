@@ -1,0 +1,47 @@
+# CONCEPT 7: Job Dependencies (needs keyword)
+# Learn how to make jobs run in specific order
+
+name: 07 - Job Dependencies Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # JOB 1: Runs first (no dependencies)
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build step
+        run: |
+          echo "Building the application..."
+          sleep 2
+          echo "Build complete!"
+  
+  # JOB 2: Runs AFTER 'build' completes
+  test:
+    runs-on: ubuntu-latest
+    needs: build  # <-- THIS makes it wait for 'build' job
+    steps:
+      - name: Test step
+        run: |
+          echo "Running tests..."
+          sleep 2
+          echo "Tests passed!"
+  
+  # JOB 3: Runs AFTER BOTH 'build' AND 'test' complete
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, test]  # <-- Wait for MULTIPLE jobs
+    steps:
+      - name: Deploy step
+        run: |
+          echo "Deploying application..."
+          echo "Deployment complete!"
+          echo ""
+          echo "=== JOB ORDER ==="
+          echo "1. build ran first"
+          echo "2. test ran after build"
+          echo "3. deploy ran after both"

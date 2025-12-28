@@ -1,0 +1,52 @@
+# CONCEPT 9: Cache Dependencies
+# Learn how to cache files to speed up workflows
+
+name: 09 - Cache Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  cache-demo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Create a dummy package file for cache key
+      - name: Create package file
+        run: echo "dependencies-v1" > packages.txt
+      
+      # CACHE ACTION: Save/restore files between workflow runs
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          # WHERE to cache (folder path)
+          path: ./my-cached-folder
+          # UNIQUE KEY: Cache is restored if key matches
+          key: my-cache-${{ hashFiles('packages.txt') }}
+      
+      # This runs only if cache was NOT found
+      - name: Install dependencies (if no cache)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Cache miss! Installing dependencies..."
+          mkdir -p my-cached-folder
+          echo "Installed at $(date)" > my-cached-folder/installed.txt
+          sleep 3
+          echo "Installation done!"
+      
+      # This always runs
+      - name: Use cached content
+        run: |
+          echo "=== Cache status ==="
+          echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
+          echo ""
+          cat my-cached-folder/installed.txt
+          echo ""
+          echo "Run this workflow again - second run will be faster!"

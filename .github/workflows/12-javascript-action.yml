@@ -1,0 +1,51 @@
+# CONCEPT 12: JavaScript Action Basics
+# Learn how JavaScript actions work
+
+name: 12 - JavaScript Action Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  js-action-demo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Most popular actions are JavaScript-based
+      # Example: actions/checkout is a JavaScript action
+      - name: Use JS action - Checkout
+        uses: actions/checkout@v4
+      
+      # Another JS action - GitHub Script (runs JS directly)
+      - name: Run JavaScript in workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('Hello from JavaScript!');
+            console.log('Repository:', context.repo.repo);
+            console.log('Owner:', context.repo.owner);
+            console.log('Event:', context.eventName);
+            
+            // You can use GitHub API here
+            const { data: repo } = await github.rest.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            console.log('Stars:', repo.stargazers_count);
+      
+      - name: Explain JavaScript actions
+        run: |
+          echo "=== JAVASCRIPT ACTIONS ==="
+          echo ""
+          echo "JavaScript actions have action.yml with:"
+          echo "  runs:"
+          echo "    using: 'node20'     # or node16"
+          echo "    main: 'index.js'    # entry point"
+          echo ""
+          echo "Benefits:"
+          echo "- Faster than Docker (no container startup)"
+          echo "- Access to @actions/core, @actions/github packages"
+          echo "- Most GitHub-official actions are JS"

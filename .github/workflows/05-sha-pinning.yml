@@ -1,0 +1,38 @@
+# CONCEPT 5: Commit SHA Pinning for Actions
+# Learn why SHA pinning is more secure than version tags
+
+name: 05 - SHA Pinning Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  sha-pinning-demo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # METHOD 1: Using version tag (less secure)
+      # Tags can be moved to point to different commits!
+      - name: Checkout with version tag
+        uses: actions/checkout@v4
+      
+      - name: Show what we checked out (tag method)
+        run: echo "Checked out using tag v4"
+      
+      # METHOD 2: Using commit SHA (MORE SECURE)
+      # SHA is immutable - always points to exact same code
+      # This SHA is for actions/checkout@v4.1.1
+      - name: Checkout with SHA (secure way)
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      
+      - name: Explain SHA pinning
+        run: |
+          echo "=== WHY SHA PINNING MATTERS ==="
+          echo "Tag v4 can be updated by maintainer anytime"
+          echo "SHA b4ffde65... ALWAYS points to same code"
+          echo "For security-critical workflows, use SHA!"
+          echo ""
+          echo "Find SHA: Go to action repo > Releases > Copy commit SHA"

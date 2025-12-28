@@ -1,0 +1,44 @@
+# CONCEPT 3: Environment Variables (GITHUB_ENV vs inline)
+# Learn different ways to set and use environment variables
+
+name: 03 - Environment Variables Demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# WORKFLOW-LEVEL env: Available to ALL jobs
+env:
+  WORKFLOW_VAR: "I am available everywhere"
+
+jobs:
+  env-demo:
+    runs-on: ubuntu-latest
+    
+    # JOB-LEVEL env: Available to all steps in THIS job
+    env:
+      JOB_VAR: "I am available in this job only"
+    
+    steps:
+      # STEP-LEVEL env: Available only in THIS step
+      - name: Step with inline env
+        env:
+          STEP_VAR: "I exist only in this step"
+        run: |
+          echo "Workflow var: $WORKFLOW_VAR"
+          echo "Job var: $JOB_VAR"
+          echo "Step var: $STEP_VAR"
+      
+      # Using GITHUB_ENV to pass variable to NEXT steps
+      - name: Set variable for next steps
+        run: |
+          echo "MY_DYNAMIC_VAR=HelloFromPreviousStep" >> $GITHUB_ENV
+          echo "Variable set! It will be available in next steps."
+      
+      # Access the variable set via GITHUB_ENV
+      - name: Use variable from previous step
+        run: |
+          echo "Dynamic var: $MY_DYNAMIC_VAR"
+          echo "This proves GITHUB_ENV passes vars between steps!"
